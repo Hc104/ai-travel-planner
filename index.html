@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>旅行规划助手 - 探索世界的每一个角落</title>
+    <meta name="theme-color" content="#3b82f6">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="hero.css">
+    <link rel="stylesheet" href="styles.css">
+    <script>
+    window._AMapSecurityConfig = {
+        securityJsCode: 'aa0fc35d2249d55c8c78f307b71195ac',
+    }
+</script>
+<script src="https://webapi.amap.com/maps?v=2.0&key=b87e57c19df3b4cc00903af692340e21&plugin=AMap.AutoComplete,AMap.Driving,AMap.Transfer,AMap.Geocoder,AMap.Scale,AMap.ToolBar"></script>
+<script src="https://unpkg.com/phosphor-icons@1.4.1"></script>
+</head>
+<body>
+    <section class="hero-section">
+        <div class="transition-overlay" id="transitionOverlay"></div>
+        
+        <div class="bg-container">
+            <div class="bg-layer bg-layer-1" style="background-image: url('assets/great-wall.jpg');">
+                <div class="bg-overlay"></div>
+            </div>
+            <div class="bg-layer bg-layer-2" style="background-image: url('assets/shanghai-night.jpg');">
+                <div class="bg-overlay"></div>
+            </div>
+        </div>
+        
+        <div class="content-layer">
+            <nav class="navbar">
+                <div class="nav-left">
+                    <svg class="nav-logo" viewBox="0 0 40 40" fill="none">
+                        <circle cx="20" cy="20" r="18" stroke="white" stroke-width="2"/>
+                        <path d="M8 20h24M20 8v24M12 12l8 8 8-8M12 28l8-8 8 8" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span class="logo">TravelPlan</span>
+                </div>
+                <div class="nav-right">
+                    <div class="nav-pill">
+                        <a href="#" class="nav-link">目的地</a>
+                        <a href="#" class="nav-link">行程规划</a>
+                        <a href="#" class="nav-link">景点推荐</a>
+                        <button class="nav-btn" onclick="goToPlanner()">开始规划</button>
+                    </div>
+                    <button class="hamburger-btn" onclick="toggleMobileMenu()">
+                        <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="3" x2="21" y1="6" y2="6"/><line x1="3" x2="21" y1="12" y2="12"/><line x1="3" x2="21" y1="18" y2="18"/>
+                        </svg>
+                        <svg class="close-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/>
+                        </svg>
+                    </button>
+                </div>
+            </nav>
+            
+            <div class="mobile-menu-overlay" id="mobileMenu">
+                <div class="mobile-menu-content">
+                    <a href="#" class="mobile-link" style="animation-delay: 100ms">目的地</a>
+                    <a href="#" class="mobile-link" style="animation-delay: 150ms">行程规划</a>
+                    <a href="#" class="mobile-link" style="animation-delay: 200ms">景点推荐</a>
+                    <button class="mobile-get-started" style="animation-delay: 300ms" onclick="goToPlanner()">开始规划</button>
+                </div>
+            </div>
+            
+            <div class="hero-content">
+                <div class="hero-badge">
+                    发现中国之美，开启您的旅程
+                </div>
+                
+                <h1 class="hero-heading">
+                    走遍中华<br>
+                    <span class="highlight">锦绣山河</span>
+                </h1>
+                
+                <p class="hero-subtext">
+                    从长城到江南水乡，从雪山到海滨城市，AI 智能规划助您探索每一处风景，定制专属旅行体验。
+                </p>
+                
+                <div class="hero-actions">
+                    <button class="btn-primary" onclick="goToPlanner()">
+                        <span>开始规划行程</span>
+                        <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </button>
+                </div>
+                
+                <div class="video-switcher" id="videoSwitcher">
+                    <button class="switcher-btn active" data-index="0">长城雄姿</button>
+                    <button class="switcher-btn" data-index="1">上海夜景</button>
+                    <button class="switcher-btn" data-index="2">古刹禅意</button>
+                    <button class="switcher-btn" data-index="3">黄山云海</button>
+                </div>
+            </div>
+            
+            <div class="bottom-spacer"></div>
+            
+            <div class="stats-row">
+                <span class="stat">500+ 覆盖城市</span>
+                <span class="stat-divider">|</span>
+                <span class="stat">10万+ 景点数据</span>
+                <span class="stat-divider">|</span>
+                <span class="stat">98% 用户满意度</span>
+                <span class="stat-divider">|</span>
+                <span class="stat">智能规划引擎</span>
+            </div>
+            
+            <button class="go-to-planner" onclick="goToPlanner()">
+                <span>进入旅行规划</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 5v14M5 12l7 7 7-7"/>
+                </svg>
+            </button>
+        </div>
+    </section>
+    
+    <div class="planner-view" id="plannerView" style="display:none;">
+        <div class="app-container">
+            <header class="app-header">
+                <h1>旅游智能规划助手</h1>
+                <p class="subtitle">智能规划您的完美旅程</p>
+            </header>
+            <main class="main-content">
+                <section class="input-section">
+                    <div class="card">
+                        <h2><i data-phosphor="notebook-pen" class="section-icon"></i> 规划您的旅行</h2>
+                        <div class="plan-summary-row" id="planSummaryRow" style="display:none;">
+                            <span class="plan-summary-text" id="planSummaryText"></span>
+                            <button class="plan-summary-edit-btn" onclick="showEditForm()">修改</button>
+                        </div>
+                        <form id="travelForm">
+                            <div class="form-group">
+                                <label>出发城市</label>
+                                <div class="city-selector" id="departureSelector">
+                                    <div class="city-selector-input" id="departureInput" tabindex="0">
+                                        <span class="city-placeholder">搜索任意地点...</span>
+                                        <svg class="city-arrow" width="12" height="12" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                                    </div>
+                                    <input type="hidden" id="departureCity" required>
+                                    <input type="hidden" id="departureLng">
+                                    <input type="hidden" id="departureLat">
+                                    <div class="city-dropdown" id="departureDropdown">
+                                        <div class="city-search-box">
+                                            <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                                            <input type="text" class="city-search-input" placeholder="搜索任意出发城市..." id="departureSearch">
+                                        </div>
+                                        <div class="city-search-results" id="departureSearchResults"></div>
+                                        <div class="city-panel">
+                                            <div class="city-section">
+                                                <div class="city-section-title">🔥 热门出发地</div>
+                                                <div class="city-grid" id="departureHotCities"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>目的地</label>
+                                <div class="city-selector" id="destinationSelector">
+                                    <div class="city-selector-input" id="destinationInput" tabindex="0">
+                                        <span class="city-placeholder">搜索任意地点...</span>
+                                        <svg class="city-arrow" width="12" height="12" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                                    </div>
+                                    <input type="hidden" id="destinationCity" required>
+                                    <input type="hidden" id="destinationLng">
+                                    <input type="hidden" id="destinationLat">
+                                    <div class="city-dropdown" id="destinationDropdown">
+                                        <div class="city-search-box">
+                                            <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                                            <input type="text" class="city-search-input" placeholder="搜索目的地，或从下方选择已支持城市..." id="destinationSearch">
+                                    </div>
+                                    <div class="city-search-results" id="destinationSearchResults"></div>
+                                    <div class="city-panel">
+                                        <div class="city-section" id="destinationSupportedSection">
+                                            <div class="city-section-title">✨ 已支持完整攻略（16城）</div>
+                                            <div class="city-grid supported-grid" id="destinationHotCities"></div>
+                                        </div>
+                                        <div class="city-section-divider"></div>
+                                        <div class="city-section" style="display:none">
+                                            <div class="city-section-title">🔥 热门目的地</div>
+                                            <div class="city-grid" id="destinationHotCitiesLegacy" style="display:none"></div>
+                                        </div>
+                                    </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="travelDate">出发日期</label>
+                                <input type="date" id="travelDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="travelDays">旅行天数</label>
+                                <input type="number" id="travelDays" min="1" max="30" value="3" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="budget">总预算 (元)</label>
+                                <input type="number" id="budget" min="500" max="100000" value="5000" required>
+                            </div>
+                            <div class="form-group">
+                                <label>旅行偏好</label>
+                                <div class="preference-options">
+                                    <label class="checkbox-label"><input type="checkbox" name="preference" value="nature" checked><i data-phosphor="trees" class="checkbox-icon"></i><span>自然风光</span></label>
+                                    <label class="checkbox-label"><input type="checkbox" name="preference" value="history"><i data-phosphor="landmark" class="checkbox-icon"></i><span>历史人文</span></label>
+                                    <label class="checkbox-label"><input type="checkbox" name="preference" value="food"><i data-phosphor="utensils" class="checkbox-icon"></i><span>美食探店</span></label>
+                                    <label class="checkbox-label"><input type="checkbox" name="preference" value="instagram"><i data-phosphor="camera" class="checkbox-icon"></i><span>网红打卡</span></label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>行程节奏</label>
+                                <div class="pace-options" id="paceOptions">
+                                    <label class="pace-label active">
+                                        <input type="radio" name="pace" value="compact" checked>
+                                        <span class="pace-icon">🏃</span>
+                                        <span class="pace-name">紧凑型</span>
+                                        <span class="pace-desc">每天2-3个景点</span>
+                                    </label>
+                                    <label class="pace-label">
+                                        <input type="radio" name="pace" value="comfort">
+                                        <span class="pace-icon">🚶</span>
+                                        <span class="pace-name">舒适型</span>
+                                        <span class="pace-desc">每天1-2个景点</span>
+                                    </label>
+                                    <label class="pace-label">
+                                        <input type="radio" name="pace" value="relax">
+                                        <span class="pace-icon">🧘</span>
+                                        <span class="pace-name">躺平型</span>
+                                        <span class="pace-desc">每天1个重点</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn-primary"><i data-phosphor="sparkles" class="btn-icon"></i> 开始规划</button>
+                        </form>
+                        <section class="history-section" id="historySection" style="display:none;">
+                            <div class="history-header">
+                                <h4><i data-phosphor="history" class="section-icon"></i> 历史规划</h4>
+                                <div class="history-header-actions">
+                                    <button type="button" class="history-compare-btn" onclick="comparePlans()" title="对比方案">📊 对比</button>
+                                    <button type="button" class="history-clear-btn" onclick="clearHistory()">清空</button>
+                                </div>
+                            </div>
+                            <div id="historyList"></div>
+                        </section>
+                    </div>
+                </section>
+                <section class="result-section" id="resultSection">
+                    <div class="result-card" id="mapPickerCard">
+                        <h3><i data-phosphor="map-pin" class="section-icon"></i> 地图选点</h3>
+                        <p class="map-picker-tip">点击地图选择出发地或目的地，也可拖拽标记点调整位置</p>
+                        <div id="mapPicker" style="width:100%;height:400px;border-radius:12px;overflow:hidden;"></div>
+                    </div>
+                    <div class="welcome-tip" id="welcomeTip">
+                        <div class="tip-icon">🎯</div>
+                        <h3>欢迎使用旅游规划助手</h3>
+                        <p>请在左侧填写您的旅行信息，点击"开始规划"获取专属旅行方案</p>
+                    </div>
+                    <div class="result-card" id="weatherSection" style="display: none;">
+                        <h3><i data-phosphor="cloud-sun" class="section-icon"></i> 目的地天气</h3>
+                        <div class="weather-content" id="weatherContent"></div>
+                    </div>
+                    <div class="result-card" id="transportSection" style="display: none;">
+                        <h3><i data-phosphor="train" class="section-icon"></i> 交通建议</h3>
+                        <div class="transport-tabs">
+                            <div class="transport-tab active" data-sort="recommend">推荐</div>
+                            <div class="transport-tab" data-sort="fastest">最快</div>
+                            <div class="transport-tab" data-sort="cheapest">最省钱</div>
+                        </div>
+                        <div class="transport-summary" id="transportSummary"></div>
+                        <div class="transport-options" id="transportOptions"></div>
+                    </div>
+                    <div class="result-card" id="budgetSection" style="display: none;"><h3><i data-phosphor="wallet" class="section-icon"></i> 预算分配</h3><div class="budget-content"><div class="pie-chart-container"><canvas id="budgetPieChart"></canvas></div><div class="budget-legend" id="budgetLegend"></div></div><div class="budget-details" id="budgetDetails"></div></div>
+                    <div class="result-card" id="attractionsSection" style="display: none;"><h3><i data-phosphor="mountain-snow" class="section-icon"></i> 景点推荐</h3><div class="attractions-list" id="attractionsList"></div></div>
+                    <div class="result-card" id="foodSection" style="display: none;">
+                        <h3><i data-phosphor="chef-hat" class="section-icon"></i> 美食推荐</h3>
+                        <div class="food-list" id="foodList"></div>
+                        <div class="restaurant-section" id="restaurantSection">
+                            <h4 class="restaurant-title"><i data-phosphor="utensils-crossed" class="section-icon"></i> 推荐餐厅</h4>
+                            <div class="restaurant-list" id="restaurantList"></div>
+                        </div>
+                    </div>
+                    <div class="result-card" id="hotelSection" style="display: none;">
+                        <h3><i data-phosphor="hotel" class="section-icon"></i> 住宿推荐</h3>
+                        <div id="hotelContent"></div>
+                    </div>
+                    <div class="result-card" id="itinerarySection" style="display: none;"><h3><i data-phosphor="calendar" class="section-icon"></i> 行程规划</h3><div class="itinerary-list" id="itineraryList"></div></div>
+                    <div class="result-card" id="exportSection" style="display: none; text-align: center;">
+                        <button class="export-btn" onclick="exportPlan()">
+                            <span>📋</span> 复制行程到剪贴板
+                        </button>
+                    </div>
+                    <div class="result-card" id="expenseSection" style="display: none;">
+                        <h3><i data-phosphor="receipt" class="section-icon"></i> 费用记账</h3>
+                        <div class="expense-summary" id="expenseSummary"></div>
+                        <div class="expense-form">
+                            <select id="expenseCategory" class="expense-select">
+                                <option value="">选择类别</option>
+                                <option value="住宿">🏨 住宿</option>
+                                <option value="交通">🚗 交通</option>
+                                <option value="餐饮">🍜 餐饮</option>
+                                <option value="门票">🎫 门票</option>
+                                <option value="购物">🛍️ 购物</option>
+                                <option value="其他">📦 其他</option>
+                            </select>
+                            <input type="number" id="expenseAmount" class="expense-input" placeholder="金额（元）" min="0" step="0.01">
+                            <input type="text" id="expenseNote" class="expense-input" placeholder="备注（可选）">
+                            <button class="expense-add-btn" onclick="addExpense()">+ 记一笔</button>
+                        </div>
+                        <div class="expense-list" id="expenseList"></div>
+                    </div>
+                    <div class="result-card" id="reviewSection" style="display: none; text-align: center;">
+                        <button class="review-btn" onclick="generateTripReview()">
+                            <span>🎉</span> 生成旅行回顾
+                        </button>
+                    </div>
+                    <div class="result-card" id="packingSection" style="display: none;">
+                        <h3><i data-phosphor="suitcase" class="section-icon"></i> 旅行清单</h3>
+                        <p class="packing-tip">根据你的目的地和天数，我们为你准备了以下打包建议。点击勾选已完成的项目。</p>
+                        <div class="packing-list" id="packingList"></div>
+                    </div>
+                    <div class="mobile-tab-bar" id="mobileTabBar">
+                        <button class="mobile-tab active" data-tab="itinerarySection">📅 行程</button>
+                        <button class="mobile-tab" data-tab="budgetSection">💰 预算</button>
+                        <button class="mobile-tab" data-tab="foodSection">🍜 美食</button>
+                        <button class="mobile-tab" data-tab="weatherSection">🌤️ 天气</button>
+                        <button class="mobile-tab" data-tab="transportSection">🚄 交通</button>
+                    </div>
+                </section>
+            </main>
+            <footer class="app-footer">
+                <p>由 TRAE AI 驱动的智能旅游规划助手 | 生活娱乐赛道</p>
+                <div class="footer-links">
+                    <a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">返回顶部</a>
+                    <span>·</span>
+                    <a href="#" onclick="exportPlan();return false;">导出行程</a>
+                    <span>·</span>
+                    <span>数据来源：高德地图 · Open-Meteo</span>
+                </div>
+            </footer>
+        </div>
+        <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="切换暗色/亮色模式">🌙</button>
+    </div>
+    
+    <footer class="app-footer">
+        <p>由 TRAE AI 驱动的智能旅游规划助手 | 生活娱乐赛道</p>
+        <div class="footer-links">
+            <a href="#" onclick="goToPlanner();return false;">开始规划</a>
+            <span>·</span>
+            <span>数据来源：高德地图 · Open-Meteo</span>
+            <span>·</span>
+            <span>覆盖全国 500+ 城市</span>
+        </div>
+    </footer>
+    
+    <script>
+        const images = [
+            'assets/great-wall.jpg',
+            'assets/shanghai-night.jpg',
+            'assets/ancient-temple.jpg',
+            'assets/huangshan.jpg'
+        ];
+        
+        let currentIndex = 0;
+        let autoPlayInterval;
+        
+        const bgLayer1 = document.querySelector('.bg-layer-1');
+        const bgLayer2 = document.querySelector('.bg-layer-2');
+        
+        function startAutoPlay() {
+            autoPlayInterval = setInterval(() => {
+                const nextIndex = (currentIndex + 1) % images.length;
+                switchSlide(nextIndex);
+            }, 5000);
+        }
+        
+        function stopAutoPlay() {
+            if (autoPlayInterval) {
+                clearInterval(autoPlayInterval);
+                autoPlayInterval = null;
+            }
+        }
+        
+        function switchSlide(index) {
+            if (index === currentIndex) return;
+            
+            stopAutoPlay();
+            
+            const newIndex = index;
+            currentIndex = newIndex;
+            
+            const layerOut = bgLayer1.style.opacity === '1' ? bgLayer1 : bgLayer2;
+            const layerIn = bgLayer1.style.opacity === '1' ? bgLayer2 : bgLayer1;
+            
+            layerIn.style.backgroundImage = `url('${images[newIndex]}')`;
+            
+            layerOut.classList.add('fading-out');
+            layerOut.classList.remove('fading-in');
+            layerIn.classList.add('fading-in');
+            layerIn.classList.remove('fading-out');
+            
+            const switcherBtns = document.querySelectorAll('.switcher-btn');
+            switcherBtns.forEach((btn, i) => {
+                btn.classList.remove('active');
+                if (i === newIndex) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            setTimeout(() => {
+                startAutoPlay();
+            }, 700);
+        }
+        
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('open');
+        }
+        
+        function goToPlanner() {
+            var heroSection = document.querySelector('.hero-section');
+            var overlay = document.getElementById('transitionOverlay');
+            var plannerView = document.getElementById('plannerView');
+
+            // 1. hero 内容逐层退出
+            heroSection.classList.add('exiting');
+
+            // 2. 遮罩从底部滑入
+            setTimeout(function() {
+                overlay.classList.add('slide-up');
+            }, 150);
+
+            // 3. 遮罩停留后向上滑出，同时显示 plannerView
+            setTimeout(function() {
+                plannerView.style.display = 'block';
+                // 强制滚动到顶部
+                window.scrollTo(0, 0);
+                document.body.style.overflow = 'auto';
+                document.documentElement.style.overflow = 'auto';
+
+                // 初始化地图（因为地图在 display:none 时初始化会尺寸为0）
+                if (typeof initMapPicker === 'function') {
+                    setTimeout(function() { initMapPicker(); }, 200);
+                }
+                if (typeof initApp === 'function') {
+                    initApp();
+                }
+
+                // 遮罩从上滑出
+                overlay.classList.add('slide-out');
+            }, 650);
+
+            // 4. 遮罩完全滑出后，隐藏 hero-section 并重置
+            setTimeout(function() {
+                heroSection.style.display = 'none';
+                overlay.classList.remove('slide-up', 'slide-out');
+                overlay.style.transform = 'translateY(100%)';
+                overlay.style.opacity = '0';
+            }, 1200);
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            startAutoPlay();
+            
+            // 事件委托：切换按钮点击
+            const switcher = document.getElementById('videoSwitcher');
+            switcher.addEventListener('click', (e) => {
+                const btn = e.target.closest('.switcher-btn');
+                if (!btn) return;
+                const idx = parseInt(btn.getAttribute('data-index'));
+                if (!isNaN(idx)) switchSlide(idx);
+            });
+        });
+    </script>
+    <script src="llm-bridge.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

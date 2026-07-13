@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>景点详情 - 旅游智能规划助手</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* 景点详情页专用样式 */
+        .attraction-page {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding-bottom: 40px;
+        }
+
+        .attraction-nav {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+
+        .attraction-nav-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .attraction-nav-back:hover {
+            opacity: 0.9;
+            transform: translateX(-2px);
+        }
+
+        .attraction-nav-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1e293b;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            flex: 1;
+        }
+
+        .attraction-page-container {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .attraction-page-card {
+            background: #fff;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        }
+
+        .attraction-page-cover {
+            height: 260px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .attraction-page-emoji {
+            font-size: 5rem;
+            margin-bottom: 12px;
+            filter: drop-shadow(0 4px 12px rgba(0,0,0,0.2));
+        }
+
+        .attraction-page-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            padding: 0 24px;
+            text-align: center;
+        }
+
+        .attraction-page-body {
+            padding: 28px 32px 32px;
+        }
+
+        .attraction-page-rating {
+            font-size: 1.1rem;
+            color: #f59e0b;
+            margin-bottom: 10px;
+        }
+
+        .attraction-page-rating span {
+            color: #64748b;
+            font-size: 0.95rem;
+        }
+
+        .attraction-page-price {
+            color: #dc2626;
+            font-weight: 600;
+        }
+
+        .attraction-page-desc {
+            font-size: 1rem;
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 16px;
+        }
+
+        .attraction-page-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .attraction-page-tag {
+            padding: 4px 12px;
+            background: #eef2ff;
+            color: #4f46e5;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .attraction-page-info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+
+        .attraction-page-info-item {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 18px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .attraction-page-info-item .info-icon {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+
+        .attraction-page-info-item .info-label {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .attraction-page-info-item .info-value {
+            font-size: 0.95rem;
+            color: #1e293b;
+            font-weight: 600;
+            line-height: 1.5;
+        }
+
+        .attraction-page-info-item .info-sub {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            margin-top: 6px;
+        }
+
+        .attraction-page-tips {
+            background: linear-gradient(135deg, #fefce8, #fef9c3);
+            border-radius: 14px;
+            padding: 24px 28px;
+            border: 1px solid #fde68a;
+        }
+
+        .tips-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #92400e;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tips-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .tips-item {
+            font-size: 0.92rem;
+            color: #78350f;
+            line-height: 1.7;
+            padding-left: 8px;
+            border-left: 3px solid #fbbf24;
+        }
+
+        .attraction-page-footer {
+            text-align: center;
+            padding: 24px 0 0;
+        }
+
+        .attraction-page-footer a {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 32px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: #fff;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .attraction-page-footer a:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 640px) {
+            .attraction-page-cover {
+                height: 200px;
+            }
+            .attraction-page-emoji {
+                font-size: 4rem;
+            }
+            .attraction-page-name {
+                font-size: 1.4rem;
+            }
+            .attraction-page-body {
+                padding: 20px 20px 24px;
+            }
+            .attraction-page-info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="attraction-page" id="attractionPage">
+        <!-- 导航栏 -->
+        <nav class="attraction-nav">
+            <a href="javascript:goBack()" class="attraction-nav-back">&larr; 返回规划</a>
+            <div class="attraction-nav-title" id="navTitle">景点详情</div>
+        </nav>
+
+        <!-- 内容区 -->
+        <div class="attraction-page-container">
+            <div class="attraction-page-card" id="pageCard">
+                <div class="attraction-page-cover" id="pageCover">
+                    <div class="attraction-page-emoji" id="pageEmoji">🏞️</div>
+                    <div class="attraction-page-name" id="pageName">加载中...</div>
+                </div>
+                <div class="attraction-page-body" id="pageBody">
+                    <div class="attraction-page-rating" id="pageRating"></div>
+                    <div class="attraction-page-desc" id="pageDesc"></div>
+                    <div class="attraction-page-tags" id="pageTags"></div>
+                    <div class="attraction-page-info-grid" id="pageInfoGrid"></div>
+                    <div class="attraction-page-tips" id="pageTips"></div>
+                    <div class="attraction-page-footer">
+                        <a href="javascript:goBack()">&larr; 返回旅行规划</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    function goBack() {
+        if (window.opener) {
+            window.close();
+            setTimeout(function() {
+                if (!window.closed) {
+                    window.location.href = 'index.html?return=1';
+                }
+            }, 500);
+        } else {
+            window.location.href = 'index.html?return=1';
+        }
+    }
+    
+    (function() {
+        // 从 URL 参数获取索引，从 localStorage 读取对应数据
+        var params = new URLSearchParams(window.location.search);
+        var idx = params.get('i');
+        var dataStr = null;
+        if (idx !== null) {
+            dataStr = localStorage.getItem('_ad_' + idx);
+        }
+        // 兼容旧方式
+        if (!dataStr) {
+            dataStr = localStorage.getItem('_currentAttractionDetail');
+        }
+        if (!dataStr) {
+            document.getElementById('pageName').textContent = '未找到景点信息';
+            document.getElementById('pageDesc').textContent = '请从旅行规划页面点击景点进入。';
+            return;
+        }
+
+        var detail;
+        try {
+            detail = JSON.parse(dataStr);
+        } catch (e) {
+            document.getElementById('pageName').textContent = '数据错误';
+            return;
+        }
+
+        // 设置页面标题
+        document.title = detail.name + ' - 景点详情';
+        document.getElementById('navTitle').textContent = detail.name;
+
+        // 封面 - 先显示渐变背景，然后加载真实图片
+        var cover = document.getElementById('pageCover');
+        cover.style.background = detail.coverGradient || 'linear-gradient(135deg, #667eea, #764ba2)';
+        document.getElementById('pageEmoji').textContent = detail.coverEmoji || '🏞️';
+        document.getElementById('pageName').textContent = detail.name;
+
+        // 使用高德地图获取的真实图片
+        if (detail.image) {
+            cover.style.background = 'linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.55)), url(' + detail.image + ')';
+            cover.style.backgroundSize = 'cover';
+            cover.style.backgroundPosition = 'center';
+            cover.style.backgroundRepeat = 'no-repeat';
+            var emoji = document.getElementById('pageEmoji');
+            if (emoji) emoji.style.display = 'none';
+        } else {
+            // 尝试从 Wikipedia 获取图片
+            loadWikiImage(detail.name);
+        }
+
+        // 评分与价格
+        var stars = '★'.repeat(Math.floor(detail.rating)) + (detail.rating % 1 >= 0.5 ? '☆' : '');
+        var priceText = detail.price === 0 ? '免费' : '¥' + detail.price + '/人';
+        document.getElementById('pageRating').innerHTML = stars + ' <span>' + detail.rating + ' 分</span> · <span class="attraction-page-price">' + priceText + '</span>';
+
+        // 描述
+        document.getElementById('pageDesc').textContent = detail.desc || '';
+
+        // 标签
+        var tagsHtml = '';
+        if (detail.tags && detail.tags.length > 0) {
+            tagsHtml = detail.tags.map(function(t) { return '<span class="attraction-page-tag">' + t + '</span>'; }).join('');
+        }
+        document.getElementById('pageTags').innerHTML = tagsHtml;
+
+        // 信息网格
+        var infoItems = [];
+        
+        infoItems.push('<div class="attraction-page-info-item">' +
+            '<div class="info-icon">🕐</div>' +
+            '<div class="info-label">开放时间</div>' +
+            '<div class="info-value">' + (detail.openTime || '暂无信息') + '</div>' +
+            (detail.closedDay ? '<div class="info-sub">' + detail.closedDay + '</div>' : '') +
+            '<div class="info-sub" style="font-size:0.75rem;color:#f59e0b;margin-top:4px;">📍 仅供参考，以官方为准</div>' +
+        '</div>');
+        
+        if (detail.duration) {
+            infoItems.push('<div class="attraction-page-info-item">' +
+                '<div class="info-icon">⏱️</div>' +
+                '<div class="info-label">建议游玩</div>' +
+                '<div class="info-value">' + detail.duration + '</div>' +
+            '</div>');
+        }
+        
+        if (detail.bestTime) {
+            infoItems.push('<div class="attraction-page-info-item">' +
+                '<div class="info-icon">🌟</div>' +
+                '<div class="info-label">最佳时间</div>' +
+                '<div class="info-value">' + detail.bestTime + '</div>' +
+            '</div>');
+        }
+        
+        if (detail.transport) {
+            infoItems.push('<div class="attraction-page-info-item">' +
+                '<div class="info-icon">🚌</div>' +
+                '<div class="info-label">交通建议</div>' +
+                '<div class="info-value">' + detail.transport + '</div>' +
+            '</div>');
+        } else if (detail.address) {
+            infoItems.push('<div class="attraction-page-info-item">' +
+                '<div class="info-icon">📍</div>' +
+                '<div class="info-label">地址</div>' +
+                '<div class="info-value">' + detail.address + '</div>' +
+            '</div>');
+        }
+        
+        document.getElementById('pageInfoGrid').innerHTML = infoItems.join('');
+
+        // 游玩贴士和准备建议
+        var tipsHtml = '';
+        var tips = detail.tips || [];
+        
+        var defaultTips = [
+            '提前在网上预约门票，避免现场排队',
+            '穿着舒适的运动鞋，方便长时间行走',
+            '记得携带身份证或相关证件',
+            '建议提前查看天气预报，备好雨具或防晒用品',
+            '园区内餐饮价格较高，可适量携带零食和水'
+        ];
+        
+        var allTips = tips.length > 0 ? tips : defaultTips;
+        
+        tipsHtml = '<div class="tips-title">📋 注意事项</div>' +
+            '<div class="tips-list">' +
+            allTips.map(function(tip) { return '<div class="tips-item">✓ ' + tip + '</div>'; }).join('') +
+            '</div>';
+        
+        document.getElementById('pageTips').innerHTML = tipsHtml;
+
+        // 从 Wikipedia 获取真实景点图片
+        function loadWikiImage(name) {
+            if (!name) return;
+            var aliasMap = {
+                '熊猫基地': '成都大熊猫繁育研究基地',
+                '古城墙': '西安城墙',
+                'IFS（春熙路）': '成都国际金融中心',
+                '华清宫': '华清池',
+                '解放碑': '重庆人民解放纪念碑',
+                '磁器口古镇': '磁器口古镇',
+                '外滩': '外滩',
+                '东方明珠': '东方明珠广播电视塔',
+                '南锣鼓巷': '南锣鼓巷',
+                '洪崖洞': '洪崖洞民俗风貌区',
+                '洋人街': '美心洋人街',
+                '鼓浪屿': '鼓浪屿',
+                '曾厝垵': '曾厝垵',
+                '八大关': '八大关',
+                '五四广场': '五四广场',
+                '玉龙雪山': '玉龙雪山',
+                '蓝月谷': '蓝月谷',
+                '亚龙湾': '亚龙湾',
+                '天涯海角': '天涯海角',
+                '橘子洲': '橘子洲',
+                '岳麓山': '岳麓山',
+                '中山陵': '中山陵',
+                '夫子庙': '夫子庙',
+                '黄鹤楼': '黄鹤楼',
+                '户部巷': '户部巷',
+                '象鼻山': '象鼻山',
+                '两江四湖': '桂林两江四湖',
+                '石林': '石林风景名胜区',
+                '滇池': '滇池',
+                '布达拉宫': '布达拉宫',
+                '大昭寺': '大昭寺',
+                '拙政园': '拙政园',
+                '周庄': '周庄镇',
+                '平江路': '平江路',
+                '广州塔': '广州塔',
+                '沙面': '沙面岛',
+                '陈家祠': '陈家祠'
+            };
+            var searchNames = [name];
+            if (aliasMap[name]) searchNames.unshift(aliasMap[name]);
+
+            function tryLoad(names, idx) {
+                if (idx >= names.length) return;
+                fetch('https://zh.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(names[idx]), { mode: 'cors' })
+                    .then(function(r) { return r.json(); })
+                    .then(function(data) {
+                        if (data.originalimage && data.originalimage.source) {
+                            var cover = document.getElementById('pageCover');
+                            cover.style.background = 'linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.55)), url(' + data.originalimage.source + ')';
+                            cover.style.backgroundSize = 'cover';
+                            cover.style.backgroundPosition = 'center';
+                            cover.style.backgroundRepeat = 'no-repeat';
+                            var emoji = document.getElementById('pageEmoji');
+                            if (emoji) emoji.style.display = 'none';
+                        } else {
+                            tryLoad(names, idx + 1);
+                        }
+                    })
+                    .catch(function() {
+                        tryLoad(names, idx + 1);
+                    });
+            }
+            tryLoad(searchNames, 0);
+        }
+    })();
+    </script>
+</body>
+</html>

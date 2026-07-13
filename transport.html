@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>交通详情 - 旅游智能规划助手</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .transport-page {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding-bottom: 40px;
+        }
+        .transport-nav {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+        .transport-nav-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .transport-nav-back:hover {
+            opacity: 0.9;
+            transform: translateX(-2px);
+        }
+        .transport-nav-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1e293b;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            flex: 1;
+        }
+        .transport-page-container {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .transport-page-card {
+            background: #fff;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        }
+        .transport-page-header {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            padding: 32px 28px;
+            text-align: center;
+            color: #fff;
+        }
+        .transport-page-header .route-icon {
+            font-size: 3rem;
+            margin-bottom: 8px;
+        }
+        .transport-page-header .route-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        .transport-page-header .route-subtitle {
+            font-size: 0.9rem;
+            opacity: 0.85;
+            margin-top: 6px;
+        }
+        .transport-page-body {
+            padding: 24px 28px 32px;
+        }
+        .transport-plan-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 20px 24px;
+            margin-bottom: 16px;
+            transition: all 0.2s;
+        }
+        .transport-plan-card.recommended {
+            border-color: #818cf8;
+            background: #eef2ff;
+            box-shadow: 0 0 0 1px #818cf8;
+        }
+        .plan-card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+        .plan-card-icon {
+            font-size: 2rem;
+            flex-shrink: 0;
+        }
+        .plan-card-info {
+            flex: 1;
+        }
+        .plan-card-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .plan-card-meta {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-top: 4px;
+        }
+        .plan-card-cost {
+            text-align: right;
+            flex-shrink: 0;
+        }
+        .plan-card-cost .cost-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #4f46e5;
+        }
+        .plan-card-cost .cost-label {
+            font-size: 0.75rem;
+            color: #94a3b8;
+        }
+        .plan-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        .plan-badge.recommend { background: #dbeafe; color: #2563eb; }
+        .plan-badge.fastest { background: #dcfce7; color: #16a34a; }
+        .plan-badge.cheapest { background: #fef3c7; color: #d97706; }
+        .plan-badge.comfort { background: #fce7f3; color: #db2777; }
+        .plan-badge.transfer { background: #f3e8ff; color: #9333ea; }
+        .plan-badge.estimate { background: #f1f5f9; color: #64748b; }
+        .plan-card-steps {
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px dashed #e2e8f0;
+        }
+        .plan-step {
+            display: flex;
+            gap: 12px;
+            padding: 8px 0;
+            align-items: flex-start;
+        }
+        .plan-step + .plan-step {
+            border-top: 1px solid #f1f5f9;
+        }
+        .step-num {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: #eef2ff;
+            color: #4f46e5;
+            font-size: 0.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        .step-body {
+            flex: 1;
+        }
+        .step-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #1e293b;
+        }
+        .step-desc {
+            font-size: 0.82rem;
+            color: #64748b;
+            margin-top: 2px;
+        }
+        .step-duration {
+            font-size: 0.78rem;
+            color: #94a3b8;
+            margin-top: 2px;
+        }
+        .plan-card-tips {
+            margin-top: 14px;
+            padding: 14px 16px;
+            background: #fffbeb;
+            border-radius: 10px;
+            border: 1px solid #fde68a;
+        }
+        .plan-card-tips .tips-label {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: #92400e;
+            margin-bottom: 8px;
+        }
+        .plan-card-tips .tips-item {
+            font-size: 0.82rem;
+            color: #78350f;
+            line-height: 1.7;
+        }
+        .transport-page-footer {
+            text-align: center;
+            padding: 24px 0 0;
+        }
+        .transport-page-footer a {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 32px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: #fff;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .transport-page-footer a:hover { opacity: 0.9; transform: translateY(-2px); }
+
+        @media (max-width: 640px) {
+            .transport-page-header { padding: 24px 20px; }
+            .transport-page-header .route-title { font-size: 1.2rem; }
+            .transport-page-body { padding: 16px 16px 24px; }
+            .transport-plan-card { padding: 16px; }
+            .plan-card-header { flex-wrap: wrap; }
+        }
+    </style>
+</head>
+<body>
+    <div class="transport-page" id="transportPage">
+        <nav class="transport-nav">
+            <a href="javascript:history.back()" class="transport-nav-back">&larr; 返回规划</a>
+            <div class="transport-nav-title" id="navTitle">交通详情</div>
+        </nav>
+        <div class="transport-page-container">
+            <div class="transport-page-card" id="pageCard">
+                <div class="transport-page-header" id="pageHeader">
+                    <div class="route-icon">🚄</div>
+                    <div class="route-title" id="routeTitle">加载中...</div>
+                    <div class="route-subtitle" id="routeSubtitle"></div>
+                </div>
+                <div class="transport-page-body" id="pageBody">
+                    <div class="transport-page-footer">
+                        <a href="javascript:history.back()">&larr; 返回旅行规划</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    (function() {
+        var dataStr = localStorage.getItem('_transportData');
+        if (!dataStr) {
+            document.getElementById('routeTitle').textContent = '未找到交通信息';
+            document.getElementById('routeSubtitle').textContent = '请从旅行规划页面查看交通建议。';
+            return;
+        }
+
+        var data;
+        try {
+            data = JSON.parse(dataStr);
+        } catch (e) {
+            document.getElementById('routeTitle').textContent = '数据错误';
+            return;
+        }
+
+        document.title = data.departureCity + ' → ' + data.destinationCity + ' - 交通详情';
+        document.getElementById('navTitle').textContent = data.departureCity + ' → ' + data.destinationCity;
+        document.getElementById('routeTitle').textContent = data.departureCity + ' → ' + data.destinationCity;
+        document.getElementById('routeSubtitle').textContent = '共 ' + data.plans.length + ' 种交通方案';
+
+        var plans = data.plans;
+        var fastestPlan = plans.reduce(function(a, b) { return a.totalTime < b.totalTime ? a : b; });
+        var cheapestPlan = plans.reduce(function(a, b) { return a.cost < b.cost ? a : b; });
+        var bestComfortPlan = plans.reduce(function(a, b) { return a.comfort > b.comfort ? a : b; });
+
+        // 计算推荐方案
+        var scoredPlans = plans.map(function(p) {
+            var score = (100 - p.comfort) * 0.3 + (p.totalTime / 24) * 40 + (p.cost / 5000) * 30;
+            return { plan: p, score: score };
+        });
+        scoredPlans.sort(function(a, b) { return a.score - b.score; });
+        var recommendedId = scoredPlans[0].plan.id;
+
+        var plansHtml = plans.map(function(plan) {
+            var isRecommended = plan.id === recommendedId;
+            var isFastest = plan.id === fastestPlan.id;
+            var isCheapest = plan.id === cheapestPlan.id;
+            var isBestComfort = plan.id === bestComfortPlan.id;
+
+            var badges = '';
+            if (isRecommended) badges += '<span class="plan-badge recommend">推荐</span>';
+            if (isFastest) badges += '<span class="plan-badge fastest">最快</span>';
+            if (isCheapest) badges += '<span class="plan-badge cheapest">最省</span>';
+            if (isBestComfort) badges += '<span class="plan-badge comfort">最舒适</span>';
+            if (plan.type === 'transfer') badges += '<span class="plan-badge transfer">中转</span>';
+            if (plan.isEstimate) badges += '<span class="plan-badge estimate">预估</span>';
+
+            var stepsHtml = '';
+            if (plan.steps && plan.steps.length > 0) {
+                stepsHtml = '<div class="plan-card-steps">' +
+                    plan.steps.map(function(step, i) {
+                        return '<div class="plan-step">' +
+                            '<div class="step-num">' + (i + 1) + '</div>' +
+                            '<div class="step-body">' +
+                                '<div class="step-title">' + step.title + '</div>' +
+                                '<div class="step-desc">' + step.desc + '</div>' +
+                                '<div class="step-duration">' + step.duration + '</div>' +
+                            '</div>' +
+                        '</div>';
+                    }).join('') +
+                '</div>';
+            }
+
+            var tipsHtml = '';
+            if (plan.tips && plan.tips.length > 0) {
+                tipsHtml = '<div class="plan-card-tips">' +
+                    '<div class="tips-label">💡 贴心提示</div>' +
+                    plan.tips.map(function(tip) { return '<div class="tips-item">• ' + tip + '</div>'; }).join('') +
+                '</div>';
+            }
+
+            var timeStr = plan.depTime ? plan.depTime + ' → ' + plan.arrTime + (plan.isNextDay ? ' (+1天)' : '') : plan.totalTimeStr;
+            var trainStr = plan.trainName ? ' · ' + plan.trainName : '';
+
+            return '<div class="transport-plan-card' + (isRecommended ? ' recommended' : '') + '">' +
+                '<div class="plan-card-header">' +
+                    '<div class="plan-card-icon">' + plan.icon + '</div>' +
+                    '<div class="plan-card-info">' +
+                        '<div class="plan-card-name">' + plan.name + '方案' + trainStr + ' ' + badges + '</div>' +
+                        '<div class="plan-card-meta">⏱️ ' + timeStr + ' · 📏 ' + Math.round(plan.distance || 0) + '公里</div>' +
+                    '</div>' +
+                    '<div class="plan-card-cost">' +
+                        '<div class="cost-value">¥' + plan.cost + '</div>' +
+                        '<div class="cost-label">' + (plan.priceLabel || '预估总费用') + '</div>' +
+                    '</div>' +
+                '</div>' +
+                stepsHtml +
+                tipsHtml +
+            '</div>';
+        }).join('');
+
+        document.getElementById('pageBody').innerHTML = '<div style="margin-bottom:24px;">' + plansHtml + '</div>' +
+            '<div class="transport-page-footer">' +
+                '<a href="javascript:history.back()">&larr; 返回旅行规划</a>' +
+            '</div>';
+    })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>酒店详情 - 旅游智能规划助手</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .hotel-page {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding-bottom: 40px;
+        }
+        .hotel-nav {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+        .hotel-nav-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .hotel-nav-back:hover {
+            opacity: 0.9;
+            transform: translateX(-2px);
+        }
+        .hotel-nav-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1e293b;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            flex: 1;
+        }
+        .hotel-page-container {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .hotel-page-card {
+            background: #fff;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        }
+        .hotel-page-cover {
+            height: 240px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .hotel-page-emoji {
+            font-size: 5rem;
+            margin-bottom: 12px;
+            filter: drop-shadow(0 4px 12px rgba(0,0,0,0.2));
+        }
+        .hotel-page-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            padding: 0 24px;
+            text-align: center;
+        }
+        .hotel-page-body {
+            padding: 28px 32px 32px;
+        }
+        .hotel-page-rating {
+            font-size: 1.1rem;
+            color: #f59e0b;
+            margin-bottom: 10px;
+        }
+        .hotel-page-rating span { color: #64748b; font-size: 0.95rem; }
+        .hotel-page-price { color: #dc2626; font-weight: 600; }
+        .hotel-page-desc {
+            font-size: 1rem;
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 16px;
+        }
+        .hotel-page-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+        .hotel-page-tag {
+            padding: 4px 12px;
+            background: #eef2ff;
+            color: #4f46e5;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        .hotel-page-info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+        .hotel-page-info-item {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 18px;
+            border: 1px solid #e2e8f0;
+        }
+        .hotel-page-info-item .info-icon { font-size: 1.5rem; margin-bottom: 8px; }
+        .hotel-page-info-item .info-label { font-size: 0.8rem; color: #94a3b8; margin-bottom: 6px; font-weight: 500; }
+        .hotel-page-info-item .info-value { font-size: 0.95rem; color: #1e293b; font-weight: 600; line-height: 1.5; }
+        .hotel-page-facilities {
+            background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+            border-radius: 14px;
+            padding: 20px 24px;
+            border: 1px solid #bbf7d0;
+            margin-bottom: 24px;
+        }
+        .facilities-title { font-weight: 700; font-size: 1.05rem; color: #166534; margin-bottom: 12px; }
+        .facilities-list { display: flex; flex-wrap: wrap; gap: 8px; }
+        .facility-tag {
+            padding: 6px 14px;
+            background: #fff;
+            color: #15803d;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border: 1px solid #bbf7d0;
+        }
+        .hotel-page-tips {
+            background: linear-gradient(135deg, #fefce8, #fef9c3);
+            border-radius: 14px;
+            padding: 20px 24px;
+            border: 1px solid #fde68a;
+            margin-bottom: 24px;
+        }
+        .hotel-page-tips .tips-title { font-weight: 700; font-size: 1.05rem; color: #92400e; margin-bottom: 12px; }
+        .hotel-page-tips .tips-list { display: flex; flex-direction: column; gap: 10px; }
+        .hotel-page-tips .tips-item { font-size: 0.9rem; color: #78350f; line-height: 1.7; padding-left: 4px; }
+        .hotel-page-footer {
+            text-align: center;
+            padding: 24px 0 0;
+        }
+        .hotel-page-footer a {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 32px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: #fff;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .hotel-page-footer a:hover { opacity: 0.9; transform: translateY(-2px); }
+
+        @media (max-width: 640px) {
+            .hotel-page-cover { height: 200px; }
+            .hotel-page-emoji { font-size: 4rem; }
+            .hotel-page-name { font-size: 1.4rem; }
+            .hotel-page-body { padding: 20px 20px 24px; }
+            .hotel-page-info-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="hotel-page" id="hotelPage">
+        <nav class="hotel-nav">
+            <a href="javascript:history.back()" class="hotel-nav-back">&larr; 返回规划</a>
+            <div class="hotel-nav-title" id="navTitle">酒店详情</div>
+        </nav>
+        <div class="hotel-page-container">
+            <div class="hotel-page-card" id="pageCard">
+                <div class="hotel-page-cover" id="pageCover">
+                    <div class="hotel-page-emoji" id="pageEmoji">🏨</div>
+                    <div class="hotel-page-name" id="pageName">加载中...</div>
+                </div>
+                <div class="hotel-page-body" id="pageBody">
+                    <div class="hotel-page-rating" id="pageRating"></div>
+                    <div class="hotel-page-desc" id="pageDesc"></div>
+                    <div class="hotel-page-tags" id="pageTags"></div>
+                    <div class="hotel-page-info-grid" id="pageInfoGrid"></div>
+                    <div class="hotel-page-facilities" id="pageFacilities"></div>
+                    <div class="hotel-page-tips" id="pageTips"></div>
+                    <div class="hotel-page-footer">
+                        <a href="javascript:history.back()">&larr; 返回旅行规划</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    (function() {
+        // 从 URL 参数获取索引，从 localStorage 读取对应数据
+        var params = new URLSearchParams(window.location.search);
+        var idx = params.get('i');
+        var dataStr = null;
+        if (idx !== null) {
+            dataStr = localStorage.getItem('_hd_' + idx);
+        }
+        // 兼容旧方式
+        if (!dataStr) {
+            dataStr = localStorage.getItem('_currentHotelDetail');
+        }
+        if (!dataStr) {
+            document.getElementById('pageName').textContent = '未找到酒店信息';
+            document.getElementById('pageDesc').textContent = '请从旅行规划页面点击酒店进入。';
+            return;
+        }
+
+        var detail;
+        try {
+            detail = JSON.parse(dataStr);
+        } catch (e) {
+            document.getElementById('pageName').textContent = '数据错误';
+            return;
+        }
+
+        document.title = detail.name + ' - 酒店详情';
+        document.getElementById('navTitle').textContent = detail.name;
+
+        var cover = document.getElementById('pageCover');
+        cover.style.background = detail.coverGradient || 'linear-gradient(135deg, #6366f1, #8b5cf6)';
+        document.getElementById('pageEmoji').textContent = detail.emoji || '🏨';
+        document.getElementById('pageName').textContent = detail.name;
+
+        var stars = '★'.repeat(Math.floor(detail.rating || 0)) + (detail.rating && detail.rating % 1 >= 0.5 ? '☆' : '');
+        var priceText = '¥' + (detail.pricePerNight || '0') + '/晚 · 共¥' + (detail.totalPrice || '0') + '（' + (detail.days || '1') + '晚）';
+        document.getElementById('pageRating').innerHTML = stars + ' <span>' + (detail.rating || '0') + ' 分</span> · <span class="hotel-page-price">' + priceText + '</span>';
+
+        document.getElementById('pageDesc').textContent = detail.description || '位于' + (detail.city || '') + (detail.district ? ' ' + detail.district : '') + '，' + (detail.tier || '经济') + '型住宿。';
+
+        var tagsHtml = '';
+        if (detail.tags && detail.tags.length > 0) {
+            tagsHtml = detail.tags.map(function(t) { return '<span class="hotel-page-tag">' + t + '</span>'; }).join('');
+        }
+        document.getElementById('pageTags').innerHTML = tagsHtml;
+
+        var gridHtml =
+            '<div class="hotel-page-info-item">' +
+                '<div class="info-icon">🕐</div>' +
+                '<div class="info-label">入住/退房</div>' +
+                '<div class="info-value">' + (detail.checkIn || '14:00') + ' 入住 / ' + (detail.checkOut || '12:00') + ' 退房</div>' +
+            '</div>' +
+            '<div class="hotel-page-info-item">' +
+                '<div class="info-icon">📍</div>' +
+                '<div class="info-label">位置</div>' +
+                '<div class="info-value">' + (detail.city || '') + (detail.district ? ' ' + detail.district : '') + ' · 距市中心 ' + (detail.distance || '0') + 'km</div>' +
+            '</div>' +
+            '<div class="hotel-page-info-item">' +
+                '<div class="info-icon">🏨</div>' +
+                '<div class="info-label">档次</div>' +
+                '<div class="info-value">' + (detail.tier || '经济') + '型 · ' + (detail.pricePerNight || '0') + '元/晚</div>' +
+            '</div>' +
+            '<div class="hotel-page-info-item">' +
+                '<div class="info-icon">🚌</div>' +
+                '<div class="info-label">周边交通</div>' +
+                '<div class="info-value">' + (detail.transport || '交通便利，近地铁站/公交枢纽') + '</div>' +
+            '</div>' +
+            '<div class="hotel-page-info-item">' +
+                '<div class="info-icon">🍳</div>' +
+                '<div class="info-label">早餐</div>' +
+                '<div class="info-value">' + (detail.breakfast || '不含早餐') + '</div>' +
+            '</div>';
+        document.getElementById('pageInfoGrid').innerHTML = gridHtml;
+
+        var facilitiesHtml = '';
+        if (detail.facilities && detail.facilities.length > 0) {
+            facilitiesHtml = '<div class="facilities-title">🏨 酒店设施</div>' +
+                '<div class="facilities-list">' +
+                detail.facilities.map(function(f) { return '<span class="facility-tag">' + f + '</span>'; }).join('') +
+                '</div>';
+        }
+        document.getElementById('pageFacilities').innerHTML = facilitiesHtml;
+
+        var tipsHtml = '';
+        if (detail.tips && detail.tips.length > 0) {
+            tipsHtml = '<div class="tips-title">💡 入住贴士</div>' +
+                '<div class="tips-list">' +
+                detail.tips.map(function(tip) { return '<div class="tips-item">' + tip + '</div>'; }).join('') +
+                '</div>';
+        }
+        document.getElementById('pageTips').innerHTML = tipsHtml;
+    })();
+    </script>
+</body>
+</html>

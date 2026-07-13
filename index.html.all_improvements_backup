@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>旅行规划助手 - 探索世界的每一个角落</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="hero.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <section class="hero-section">
+        <div class="transition-overlay" id="transitionOverlay"></div>
+        
+        <div class="bg-container">
+            <div class="bg-layer bg-layer-1" style="background-image: url('assets/great-wall.jpg');">
+                <div class="bg-overlay"></div>
+            </div>
+            <div class="bg-layer bg-layer-2" style="background-image: url('assets/shanghai-night.jpg');">
+                <div class="bg-overlay"></div>
+            </div>
+        </div>
+        
+        <div class="content-layer">
+            <nav class="navbar">
+                <div class="nav-left">
+                    <svg class="nav-logo" viewBox="0 0 40 40" fill="none">
+                        <circle cx="20" cy="20" r="18" stroke="white" stroke-width="2"/>
+                        <path d="M8 20h24M20 8v24M12 12l8 8 8-8M12 28l8-8 8 8" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span class="logo">TravelPlan</span>
+                </div>
+                <div class="nav-right">
+                    <div class="nav-pill">
+                        <a href="#" class="nav-link">目的地</a>
+                        <a href="#" class="nav-link">行程规划</a>
+                        <a href="#" class="nav-link">景点推荐</a>
+                        <button class="nav-btn" onclick="goToPlanner()">开始规划</button>
+                    </div>
+                    <button class="hamburger-btn" onclick="toggleMobileMenu()">
+                        <svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="3" x2="21" y1="6" y2="6"/><line x1="3" x2="21" y1="12" y2="12"/><line x1="3" x2="21" y1="18" y2="18"/>
+                        </svg>
+                        <svg class="close-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/>
+                        </svg>
+                    </button>
+                </div>
+            </nav>
+            
+            <div class="mobile-menu-overlay" id="mobileMenu">
+                <div class="mobile-menu-content">
+                    <a href="#" class="mobile-link" style="animation-delay: 100ms">目的地</a>
+                    <a href="#" class="mobile-link" style="animation-delay: 150ms">行程规划</a>
+                    <a href="#" class="mobile-link" style="animation-delay: 200ms">景点推荐</a>
+                    <button class="mobile-get-started" style="animation-delay: 300ms" onclick="goToPlanner()">开始规划</button>
+                </div>
+            </div>
+            
+            <div class="hero-content">
+                <div class="hero-badge">
+                    发现中国之美，开启您的旅程
+                </div>
+                
+                <h1 class="hero-heading">
+                    走遍中华<br>
+                    <span class="highlight">锦绣山河</span>
+                </h1>
+                
+                <p class="hero-subtext">
+                    从长城到江南水乡，从雪山到海滨城市，AI 智能规划助您探索每一处风景，定制专属旅行体验。
+                </p>
+                
+                <div class="hero-actions">
+                    <button class="btn-primary" onclick="goToPlanner()">
+                        <span>开始规划行程</span>
+                        <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </button>
+                </div>
+                
+                <div class="video-switcher" id="videoSwitcher">
+                    <button class="switcher-btn active" data-index="0">长城雄姿</button>
+                    <button class="switcher-btn" data-index="1">上海夜景</button>
+                    <button class="switcher-btn" data-index="2">古刹禅意</button>
+                    <button class="switcher-btn" data-index="3">黄山云海</button>
+                </div>
+            </div>
+            
+            <div class="bottom-spacer"></div>
+            
+            <div class="stats-row">
+                <span class="stat">500+ 覆盖城市</span>
+                <span class="stat-divider">|</span>
+                <span class="stat">10万+ 景点数据</span>
+                <span class="stat-divider">|</span>
+                <span class="stat">98% 用户满意度</span>
+                <span class="stat-divider">|</span>
+                <span class="stat">智能规划引擎</span>
+            </div>
+            
+            <button class="go-to-planner" onclick="goToPlanner()">
+                <span>进入旅行规划</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 5v14M5 12l7 7 7-7"/>
+                </svg>
+            </button>
+        </div>
+    </section>
+    
+    <script>
+        const images = [
+            'assets/great-wall.jpg',
+            'assets/shanghai-night.jpg',
+            'assets/ancient-temple.jpg',
+            'assets/huangshan.jpg'
+        ];
+        
+        let currentIndex = 0;
+        let autoPlayInterval;
+        
+        const bgLayer1 = document.querySelector('.bg-layer-1');
+        const bgLayer2 = document.querySelector('.bg-layer-2');
+        
+        function startAutoPlay() {
+            autoPlayInterval = setInterval(() => {
+                const nextIndex = (currentIndex + 1) % images.length;
+                switchSlide(nextIndex);
+            }, 5000);
+        }
+        
+        function stopAutoPlay() {
+            if (autoPlayInterval) {
+                clearInterval(autoPlayInterval);
+                autoPlayInterval = null;
+            }
+        }
+        
+        function switchSlide(index) {
+            if (index === currentIndex) return;
+            
+            stopAutoPlay();
+            
+            const newIndex = index;
+            currentIndex = newIndex;
+            
+            const layerOut = bgLayer1.style.opacity === '1' ? bgLayer1 : bgLayer2;
+            const layerIn = bgLayer1.style.opacity === '1' ? bgLayer2 : bgLayer1;
+            
+            layerIn.style.backgroundImage = `url('${images[newIndex]}')`;
+            
+            layerOut.classList.add('fading-out');
+            layerOut.classList.remove('fading-in');
+            layerIn.classList.add('fading-in');
+            layerIn.classList.remove('fading-out');
+            
+            const switcherBtns = document.querySelectorAll('.switcher-btn');
+            switcherBtns.forEach((btn, i) => {
+                btn.classList.remove('active');
+                if (i === newIndex) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            setTimeout(() => {
+                startAutoPlay();
+            }, 700);
+        }
+        
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('open');
+        }
+        
+        function goToPlanner() {
+            const heroSection = document.querySelector('.hero-section');
+            const overlay = document.getElementById('transitionOverlay');
+            
+            // 1. 添加退出类，开始逐层淡出动画
+            heroSection.classList.add('exiting');
+            // 2. 稍等后让遮罩从下往上滑入
+            setTimeout(() => {
+                overlay.classList.add('slide-up');
+            }, 150);
+            // 3. 等待所有动画完成后再跳转
+            setTimeout(() => {
+                window.location.href = 'planner.html';
+            }, 650);
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            startAutoPlay();
+            
+            // 事件委托：切换按钮点击
+            const switcher = document.getElementById('videoSwitcher');
+            switcher.addEventListener('click', (e) => {
+                const btn = e.target.closest('.switcher-btn');
+                if (!btn) return;
+                const idx = parseInt(btn.getAttribute('data-index'));
+                if (!isNaN(idx)) switchSlide(idx);
+            });
+        });
+    </script>
+    <script src="llm-bridge.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
